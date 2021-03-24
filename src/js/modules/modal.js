@@ -35,7 +35,7 @@ const modal = () => {
     const showModalByTime = setTimeout(() => {
         document.querySelector('.popup').style.display = "block";
         document.body.style.overflow = "hidden";
-    }, 5000);
+    }, 599000);
 };
 
 export default modal;
