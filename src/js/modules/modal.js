@@ -7,20 +7,17 @@ const modal = () => {
             closeModal = document.querySelector(closeModalSelector);
         // Открытие модального окна
         trigger.addEventListener('click', (e) => {
-            e.preventDefault();
             modal.style.display = "block";
             document.body.style.overflow = "hidden";
             clearInterval(showModalByTime);
         });
         // Закрытие модального окна
         closeModal.addEventListener('click', (e) => {
-            e.preventDefault();
             modal.style.display = 'none';
             document.body.style.overflow = "";
         });
         // Закрытие при нажатии вне области модального окна
         modal.addEventListener("click", (e) => {
-            e.preventDefault();
             if (e.target == modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = "";
