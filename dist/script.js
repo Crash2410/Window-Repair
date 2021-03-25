@@ -17814,6 +17814,7 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])();
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_block', '.glazing_content', '.glazing_slider', 'active');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.no_click', '.decoration_content > div > div', '.decoration_slider', 'after_click');
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.balcon_icons_img', '.big_img > img', '.balcon_icons', 'do_image_more', 'inline-block');
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])('.form');
 });
 
@@ -17905,27 +17906,44 @@ var forms = function forms(formSelector) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+
+
 var modal = function modal() {
   // Модальные окна
   // Функция показа модальных окон
   function showModal(triggerSelector, modalSelector, closeModalSelector) {
-    var trigger = document.querySelector(triggerSelector),
+    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var trigger = document.querySelectorAll(triggerSelector),
         modal = document.querySelector(modalSelector),
-        closeModal = document.querySelector(closeModalSelector); // Открытие модального окна
+        closeModal = document.querySelector(closeModalSelector),
+        windows = document.querySelectorAll('[data-modal]'); // Открытие модального окна
 
-    trigger.addEventListener('click', function (e) {
-      modal.style.display = "block";
-      document.body.style.overflow = "hidden";
-      clearInterval(showModalByTime);
+    trigger.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        windows.forEach(function (item) {
+          item.style.display = 'none';
+        });
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden";
+        clearInterval(showModalByTime);
+      });
     }); // Закрытие модального окна
 
     closeModal.addEventListener('click', function (e) {
+      windows.forEach(function (item) {
+        item.style.display = 'none';
+      });
       modal.style.display = 'none';
       document.body.style.overflow = "";
     }); // Закрытие при нажатии вне области модального окна
 
     modal.addEventListener("click", function (e) {
-      if (e.target == modal) {
+      if (e.target === modal && closeClickOverlay) {
+        windows.forEach(function (item) {
+          item.style.display = 'none';
+        });
         modal.style.display = 'none';
         document.body.style.overflow = "";
       }
@@ -17935,7 +17953,10 @@ var modal = function modal() {
 
   showModal('.header_btn', '.popup_engineer', '.popup_engineer .popup_close');
   showModal('.contact_us_wrap .phone_link', '.popup', '.popup_content .popup_close');
-  showModal('.feedback_block  .phone_link', '.popup', '.popup_content .popup_close'); // Показ модального окна после 60 сек 
+  showModal('.feedback_block  .phone_link', '.popup', '.popup_content .popup_close');
+  showModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');
+  showModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+  showModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false); // Показ модального окна после 60 сек 
 
   var showModalByTime = setTimeout(function () {
     document.querySelector('.popup').style.display = "block";
@@ -17964,6 +17985,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var tabs = function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, activeClass) {
+  var display = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'block';
   var tabsContent = document.querySelectorAll(tabsContentSelector),
       tabs = document.querySelectorAll(tabsSelector),
       tabsParent = document.querySelector(tabsParentSelector); // Функция скрывает табы и контент табов
@@ -17980,7 +18002,7 @@ var tabs = function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, 
 
   function showTabContent() {
     var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    tabsContent[i].style.display = 'block';
+    tabsContent[i].style.display = display;
     tabs[i].classList.add(activeClass);
   }
 
@@ -17988,7 +18010,6 @@ var tabs = function tabs(tabsSelector, tabsContentSelector, tabsParentSelector, 
   showTabContent(); // Переключатель табов
 
   tabsParent.addEventListener('click', function (e) {
-    e.preventDefault();
     var target = e.target; // Проверяем на то, чтобы мы нажали на нужный таб(делегирование событий)
 
     if (target && (target.classList.contains(tabsSelector.replace(/\./, "")) || target.parentNode.classList.contains(tabsSelector.replace(/\./, "")))) {
