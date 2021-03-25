@@ -1,10 +1,10 @@
 import {
     postData
 } from '../services/services';
+import checkNumInputs from '../modules/checkNumInputs';
 
-const forms = (formSelector) => {
-    const forms = document.querySelectorAll(formSelector),
-        phoneInputs = document.querySelectorAll('input[name="user_phone"]');
+const forms = (formSelector, state) => {
+    const forms = document.querySelectorAll(formSelector);
     // Объект с состояниями отправки данных для пользователя
     const message = {
         loading: 'Идет отправка данных.',
@@ -12,11 +12,7 @@ const forms = (formSelector) => {
         error: 'Ошибка.'
     };
     // Валидация поля для ввода телефона
-    phoneInputs.forEach(item => {
-        item.addEventListener('input', (e) => {
-            item.value = item.value.replace(/\D/, '');
-        });
-    });
+    checkNumInputs('input[name="user_phone"]');
     // Подключаем отправку форм ко всем формам на странице
     forms.forEach((item) => {
         bindPostData(item);
@@ -32,6 +28,12 @@ const forms = (formSelector) => {
             form.appendChild(statusMessage);
             // Формирование данных с формы
             const formData = new FormData(form);
+            // ~~ Если это форма последняя калькулятора, то к данным из формы добавляются данные с объекта state ~~
+            if (form.getAttribute('data-calc') == 'end') {
+                for (let key in state) {
+                    formData.append(key, state[key]);
+                }
+            }
             // Отправка данных с формы на сервер
             postData('assets/server.php', formData)
                 .then(data => {
