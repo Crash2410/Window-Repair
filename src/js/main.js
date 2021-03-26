@@ -7,12 +7,20 @@ import changeModalState from './modules/changeModalState';
 window.addEventListener('DOMContentLoaded', () => {
     "use strict";
 
-    let modalState = {};
+    let modalState = {
+        form: 0,
+        type: 'tree'
+    };
+
     changeModalState(modalState);
 
-    modal();
+    modal('.header_btn', '.popup_engineer', '.popup_engineer .popup_close');
+    modal('.phone_link', '.popup', '.popup_content .popup_close');
+    modal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');
+
     tabs('.glazing_block', '.glazing_content', '.glazing_slider', 'active');
     tabs('.no_click', '.decoration_content > div > div', '.decoration_slider', 'after_click');
     tabs('.balcon_icons_img', '.big_img > img', '.balcon_icons', 'do_image_more', 'inline-block');
+
     forms('.form', modalState);
 });

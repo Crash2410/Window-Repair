@@ -4,7 +4,8 @@ import {
 import checkNumInputs from '../modules/checkNumInputs';
 
 const forms = (formSelector, state) => {
-    const forms = document.querySelectorAll(formSelector);
+    const forms = document.querySelectorAll(formSelector),
+        modals = document.querySelectorAll('[data-modal]');
     // Объект с состояниями отправки данных для пользователя
     const message = {
         loading: 'Идет отправка данных.',
@@ -39,11 +40,23 @@ const forms = (formSelector, state) => {
                 .then(data => {
                     console.log(data);
                     statusMessage.textContent = message.success;
+                    setTimeout(() => {
+                        // Очистка объекта modalState
+                        for (var key in state) {
+                            delete state[key];
+                        }
+                        // Закрытие модального окна
+                        modals.forEach(modal => {
+                            modal.style.display = 'none';
+                            document.body.style.overflow = "";
+                        });
+                    }, 1000);
                 })
                 .catch(() => {
                     statusMessage.textContent = message.error;
                 })
                 .finally(() => {
+                    // Очистка формы и уведомления
                     form.reset();
                     setTimeout(() => {
                         statusMessage.remove();

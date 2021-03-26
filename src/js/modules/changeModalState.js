@@ -1,4 +1,5 @@
 import checkNumInputs from './checkNumInputs';
+import modal from './modal';
 
 const changeModalState = (state) => {
     // Сбор данных с формы калькулятора и добавление их в объект state
@@ -16,7 +17,8 @@ const changeModalState = (state) => {
     function bindActionToElems(event, elem, prop) {
         // Добавление  выбранного "формы окна" в объект modalState
         elem.forEach((item, i) => {
-            item.addEventListener(event, () => {
+            item.addEventListener(event, (e) => {
+                e.preventDefault();
                 switch (item.nodeName) {
                     case "SPAN":
                         // Добавление "формы окна"
@@ -43,8 +45,12 @@ const changeModalState = (state) => {
                         state[prop] = item.value;
                         break;
                 }
-
-                console.log(state);
+                // Обязательный ввод/выбор данных в формах калькулятора
+                if (document.querySelector('.popup_calc').style.display == 'block' && 'form' in state && 'width' in state && 'height' in state) {
+                    modal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+                } else if (document.querySelector('.popup_calc_profile').style.display == 'block' && 'type' in state && 'profile' in state) {
+                    modal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false);
+                }
             });
         });
     }
