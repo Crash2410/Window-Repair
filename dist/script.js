@@ -18108,14 +18108,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
 
 
-// Функция открытия модального окна
-function openModal(modal, showModalByTime) {
+var modal = function modal(triggerSelector, modalSelector, closeModalSelector) {
+  var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  // Модальные окна
+  // Функция показа модальных окон
+  var trigger = document.querySelectorAll(triggerSelector),
+      modal = document.querySelector(modalSelector),
+      closeModals = document.querySelector(closeModalSelector),
+      windows = document.querySelectorAll('[data-modal]'),
+      scroll = calcScroll(); // Открытие модального окна по нажатию на кнопку
+
+  trigger.forEach(function (item) {
+    item.addEventListener('click', function (e) {
+      e.preventDefault();
+      openModal(modal, showModalByTime, scroll);
+    });
+  }); // Закрытие модального окна
+
+  closeModal(closeModals, modal, closeClickOverlay); // Закрытие при нажатии вне области модального окна
+
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal && closeClickOverlay) {
+      windows.forEach(function (item) {
+        item.style.display = 'none';
+      });
+      modal.style.display = 'none';
+      document.body.style.overflow = "";
+    }
+  }); // Вычисляем размер скоролла, чтобы убрать дергание экрана при открытии модального окна
+
+  function calcScroll() {
+    var div = document.createElement('div'); // Задаем стили 
+
+    div.style.width = '50px';
+    div.style.height = '50px';
+    div.style.overflowY = 'scroll';
+    div.style.visibility = 'hidden';
+    document.body.appendChild(div); // Вычисляем размер прокрутки
+
+    var scrollWidth = div.offsetWidth - div.clientWidth;
+    div.remove();
+    return scrollWidth;
+  }
+}; // Функция открытия модального окна
+
+
+function openModal(modal, showModalByTime, scroll) {
   var windows = document.querySelectorAll('[data-modal]');
   windows.forEach(function (item) {
     item.style.display = 'none';
   });
   modal.style.display = "block";
   document.body.style.overflow = "hidden";
+  document.body.style.marginRight = "".concat(scroll, "px");
 
   if (showModalByTime) {
     clearInterval(showModalByTime);
@@ -18134,44 +18179,15 @@ function closeModal(closeModal, modal, closeClickOverlay) {
 
     modal.style.display = 'none';
     document.body.style.overflow = "";
+    document.body.style.marginRight = "0px";
   });
 } // Показ модального окна после 60 сек 
 
 
 var showModalByTime = setTimeout(function () {
-  document.querySelector('.popup').style.display = "block";
+  document.querySelector('.popup[data-modal]').style.display = 'block';
   document.body.style.overflow = "hidden";
 }, 60000);
-
-var modal = function modal(triggerSelector, modalSelector, closeModalSelector) {
-  var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-  // Модальные окна
-  // Функция показа модальных окон
-  var trigger = document.querySelectorAll(triggerSelector),
-      modal = document.querySelector(modalSelector),
-      closeModals = document.querySelector(closeModalSelector),
-      windows = document.querySelectorAll('[data-modal]'); // Открытие модального окна по нажатию на кнопку
-
-  trigger.forEach(function (item) {
-    item.addEventListener('click', function (e) {
-      e.preventDefault();
-      openModal(modal, showModalByTime);
-    });
-  }); // Закрытие модального окна
-
-  closeModal(closeModals, modal, closeClickOverlay); // Закрытие при нажатии вне области модального окна
-
-  modal.addEventListener("click", function (e) {
-    if (e.target === modal && closeClickOverlay) {
-      windows.forEach(function (item) {
-        item.style.display = 'none';
-      });
-      modal.style.display = 'none';
-      document.body.style.overflow = "";
-    }
-  });
-};
-
 /* harmony default export */ __webpack_exports__["default"] = (modal);
 
 /***/ }),
